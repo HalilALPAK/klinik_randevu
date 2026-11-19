@@ -4,6 +4,39 @@
 > Klinik paneliyle ilgili sözleşme `Klinik_app/SUNUCU-BAGLANTISI.md`, muhasebeyle ilgili olan `klinik_muhasebe/SUNUCU-MUHASEBE.md`'dir. Bu belge yalnızca randevu için gereken **ek** kısmı anlatır. Çelişki olursa önce panel belgesi, sonra muhasebe belgesi geçerlidir.
 > Depoya gerçek hasta verisi, telefon, şifre ya da anahtar yazılmaz.
 
+## Sunucudaki Claude: adım adım yapılacaklar
+
+Kullanıcı bu belgeyi sana verip "randevunun sunucu tarafını kur" diyecek. Muhasebede (`SUNUCU-MUHASEBE.md`) yaptığın işin aynısı; sırayla:
+
+1. **Kodu al.** Depo: `https://github.com/HalilALPAK/klinik_randevu` (dal `main`).
+   - Muhasebeyi `sunucu/klinik/muhasebe/` altında tutuyorsan bunu da `sunucu/klinik/randevu/` altına al.
+   - Yalnızca uygulama dosyaları yayınlanır: `index.html`, `stil.css`, `*.js`, `vendor/`.
+   - `kurulum/`, `*.md` ve `.git*` yayınlanmaz. `SURUM.txt`'e commit kimliğini yaz.
+2. **Göçü yaz.** §5'teki taslağı kendi göç biçimine uydur.
+   - Dosya adı sunucudaki son göçten sonra gelsin; taslakta `5_randevu.js` diye geçiyor.
+   - Var olan göçlere dokunma.
+   - Alan adları, seçim değerleri ve desenler §2 ile birebir aynı kalmalı; uygulama bunlara dayanıyor.
+3. **Yayına ekle.** 7. betik (`7-klinik-pocketbase.ps1`) `randevu/` klasörünü de `pb_public/randevu/` altına kopyalasın.
+   - `/randevu` adresi `/randevu/`'ya yönlensin.
+   - Dosyalar `Cache-Control: no-cache` ile gelsin.
+   - Kısacası muhasebe için ne yaptıysan aynısı.
+4. **Dene.** §6'daki 11 maddeyi gerçek PocketBase ile dene. Muhasebedeki `test-muhasebe.mjs` gibi bir `test-randevu.mjs` yazman yeterli.
+   - Gerçek panel girişiyle tarayıcıda da bir kez aç.
+   - Doktor ekle, randevu ekle, gelmedi işaretle, Gelmeyenler'de gör.
+5. **Yedeği kontrol et.** Yeni dört tablo gece yedeğine giriyor mu bak.
+6. **Cevap yaz.** Bu belgenin sonuna **§8. Sunucu tarafı: cevap** başlığıyla şunları yaz:
+   - nelerin kurulduğunu,
+   - taslaktan neyi değiştirdiğini,
+   - §6 sonuçlarını,
+   - uygulamada değişmesi gereken bir şey varsa onu.
+
+   Sonra kullanıcıya söyle. Kullanıcı belgeyi laptoptaki Claude'a getirecek (ya da `Z:\Projeler\klinik\` üzerinden değiş-tokuş edersiniz).
+
+**Kurallar:**
+- Laptoptaki uygulama dosyalarını (`*.js`, `index.html`, `stil.css`) sunucuda değiştirme. Gereken değişikliği §8'e yaz, laptop tarafı yapsın.
+- Canlıya alma (7. betiği çalıştırma) kullanıcının onayıyla yapılır.
+- Depoya ve bu belgeye gerçek hasta verisi, telefon, şifre ya da anahtar yazılmaz.
+
 ## 0. Özet: sunucuda yapılacaklar
 
 1. **Yeni göç dosyası:** `5_randevu.js` (adı sunucudaki son göçten sonra gelecek şekilde ayarlanmalı).
