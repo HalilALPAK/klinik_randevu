@@ -1,0 +1,11 @@
+# Gerçek hasta verisi, ekstre ve rapor çıktıları asla depoya girmemeli
+*.json
+*.csv
+*.xlsx
+*.pdf
+yedek/
+disa_aktarim/
+
+Thumbs.db
+desktop.ini
+.vscode/

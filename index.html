@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alpotech Randevu</title>
+  <link rel="icon" type="image/png" href="../logo.png">
+  <link rel="stylesheet" href="stil.css">
+</head>
+<body>
+  <div id="baglanti-bandi" class="baglanti-bandi" role="alert" hidden>
+    <span>Sunucuya bağlanılamıyor. Yazdıklarınız kaybolmaz; bağlantı gelince tekrar kaydedin.</span>
+    <button id="baglanti-tekrar" class="dugme" type="button">Tekrar dene</button>
+  </div>
+  <div id="bildirim" class="bildirim" role="status" hidden></div>
+
+  <!-- Giriş -->
+  <section id="giris-sayfasi" class="sayfa" hidden>
+    <header class="ana-baslik">
+      <div class="logo-cerceve">
+        <img src="../logo.png" alt="Alpotech Şirketler Grubu">
+      </div>
+    </header>
+    <form id="giris-formu" class="kart bilgi-formu giris-karti">
+      <h1>Randevu Girişi</h1>
+      <div class="alanlar">
+        <label>E-posta
+          <input name="eposta" type="email" required autocomplete="username">
+        </label>
+        <label>Şifre
+          <input name="sifre" type="password" required autocomplete="current-password">
+        </label>
+        <label class="beni-hatirla">
+          <input name="beniHatirla" type="checkbox" checked>
+          Beni hatırla
+        </label>
+      </div>
+      <div class="form-alt">
+        <span id="giris-mesaji" class="giris-mesaji" role="status"></span>
+        <button class="dugme birincil" type="submit">Giriş Yap</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Girişten sonra: üst menü ve ekranlar -->
+  <div id="uygulama" hidden>
+    <header class="ust-cubuk">
+      <div class="marka">
+        <img src="../logo.png" alt="">
+        <span>Alpotech Randevu</span>
+      </div>
+      <nav class="ana-menu" aria-label="Randevu ekranları">
+        <a href="#" data-menu="takvim">Takvim</a>
+        <a href="#gelmeyenler" data-menu="gelmeyenler">Gelmeyenler <span id="gelmeyen-rozeti" class="sayi-rozeti" hidden></span></a>
+        <a href="#hatirlatma" data-menu="hatirlatma">Hatırlatma</a>
+        <a href="#doktorlar" data-menu="doktorlar">Doktorlar</a>
+      </nav>
+      <div class="kullanici-cubugu">
+        <a class="dugme" href="../">Klinik Paneli</a>
+        <span id="kullanici-adi"></span>
+        <button id="cikis-dugmesi" class="dugme" type="button">Çıkış</button>
+      </div>
+    </header>
+
+    <!-- Takvim -->
+    <section id="takvim-sayfasi" class="sayfa" hidden>
+      <div class="takvim-arac">
+        <div class="tarih-gezgini">
+          <button id="takvim-onceki" class="dugme" type="button" aria-label="Önceki">‹</button>
+          <button id="takvim-bugun" class="dugme" type="button">Bugün</button>
+          <button id="takvim-sonraki" class="dugme" type="button" aria-label="Sonraki">›</button>
+          <input id="takvim-tarih" type="date" aria-label="Tarih">
+        </div>
+        <h1 id="takvim-basligi"></h1>
+        <span class="bosluk"></span>
+        <div class="gorunum-secimi" role="group" aria-label="Görünüm">
+          <button id="gorunum-gun" class="dugme" type="button">Gün</button>
+          <button id="gorunum-hafta" class="dugme" type="button">Hafta</button>
+        </div>
+        <select id="hafta-doktoru" aria-label="Haftası gösterilecek doktor" hidden></select>
+        <label class="secenek"><input id="iptalleri-goster" type="checkbox"> İptal / ertelenenler</label>
+        <button id="gunu-yazdir" class="dugme" type="button">Günü Yazdır</button>
+        <button id="yeni-randevu" class="dugme birincil" type="button">+ Randevu</button>
+      </div>
+      <p id="takvim-ozeti" class="takvim-ozeti"></p>
+      <div class="kart takvim-kabi">
+        <div id="takvim" class="takvim-kaydirma"></div>
+        <p id="takvim-bos" class="liste-bos" hidden></p>
+      </div>
+      <p class="kart-notu">Boş bir saate tıklayınca o saate randevu açılır. Randevuyu sürükleyerek başka saate ya da doktora taşıyabilirsiniz.</p>
+    </section>
+
+    <!-- Gelmeyenler: geri aranacaklar -->
+    <section id="gelmeyenler-sayfasi" class="sayfa" hidden>
+      <div class="kart">
+        <div class="liste-arac">
+          <h1>Gelmeyenler</h1>
+          <input id="gelmeyen-arama" type="search" placeholder="İsim veya telefon ile ara" aria-label="Gelmeyenlerde ara" autocomplete="off">
+          <select id="gelmeyen-siralama" aria-label="Sıralama">
+            <option value="yeni">En yeni önce</option>
+            <option value="eski">En eski önce</option>
+          </select>
+          <label class="secenek"><input id="kapananlari-goster" type="checkbox"> Kapananları da göster</label>
+        </div>
+        <div class="tablo-kaydirma">
+          <table class="tablo">
+            <thead>
+              <tr><th>Randevu</th><th>Ad Soyad</th><th>Telefon</th><th>Doktor</th><th>İşlem</th><th>Aramalar</th><th><span class="ekran-disi">İşlemler</span></th></tr>
+            </thead>
+            <tbody id="gelmeyen-satirlari"></tbody>
+          </table>
+        </div>
+        <p id="gelmeyen-bos" class="liste-bos" hidden></p>
+      </div>
+      <p class="kart-notu">Hasta "Yeniden randevu" ile yeni randevu alınca ya da "Vazgeçti" kaydedilince listeden düşer.</p>
+    </section>
+
+    <!-- Hatırlatma: seçilen günün randevuları + WhatsApp -->
+    <section id="hatirlatma-sayfasi" class="sayfa" hidden>
+      <div class="sayfa-ust">
+        <h1>Hatırlatma</h1>
+        <input id="hatirlatma-tarih" type="date" aria-label="Gün">
+        <button id="hatirlatma-bugun" class="dugme yazdirma-gizli" type="button">Bugün</button>
+        <button id="hatirlatma-yarin" class="dugme yazdirma-gizli" type="button">Yarın</button>
+        <span id="hatirlatma-ozeti" class="soluk"></span>
+        <span class="bosluk"></span>
+        <button id="hatirlatma-yazdir" class="dugme yazdirma-gizli" type="button">Yazdır</button>
+      </div>
+      <p class="yazdirma-baslik">Alpotech Klinik · Randevu listesi · <span id="hatirlatma-yazdirma-tarihi"></span></p>
+      <div class="kart">
+        <div class="tablo-kaydirma">
+          <table class="tablo">
+            <thead>
+              <tr><th>Saat</th><th>Doktor</th><th>Ad Soyad</th><th>Telefon</th><th>İşlem</th><th>Durum</th><th>Hatırlatıldı</th></tr>
+            </thead>
+            <tbody id="hatirlatma-satirlari"></tbody>
+          </table>
+        </div>
+        <p id="hatirlatma-bos" class="liste-bos" hidden></p>
+      </div>
+      <p class="kart-notu yazdirma-gizli">WhatsApp düğmesi hazır mesajla sohbeti açar ve randevuyu "hatırlatıldı" işaretler. Mesajda işlem adı yazmaz (KVKK).</p>
+    </section>
+
+    <!-- Doktorlar ve kapalı günler -->
+    <section id="doktorlar-sayfasi" class="sayfa" hidden>
+      <div class="kart">
+        <div class="kart-baslik">
+          <h1>Doktorlar</h1>
+          <span class="bosluk"></span>
+          <button id="doktor-ekle" class="dugme birincil" type="button">+ Doktor</button>
+        </div>
+        <div class="tablo-kaydirma">
+          <table class="tablo">
+            <thead>
+              <tr><th>Doktor</th><th>Çalışma günleri</th><th>Randevu süresi</th><th>Durum</th><th><span class="ekran-disi">İşlemler</span></th></tr>
+            </thead>
+            <tbody id="doktor-satirlari"></tbody>
+          </table>
+        </div>
+        <p id="doktor-bos" class="liste-bos" hidden>Henüz doktor yok. Takvimi kullanmak için önce doktor ekleyin.</p>
+      </div>
+      <div class="kart">
+        <div class="kart-baslik">
+          <h2>İzinler ve Kapalı Günler</h2>
+          <span class="kart-notu">Takvimde gri görünür; o saate randevu verilirken uyarılır</span>
+          <span class="bosluk"></span>
+          <button id="izin-ekle" class="dugme" type="button">+ İzin / Kapalı gün</button>
+        </div>
+        <div class="tablo-kaydirma">
+          <table class="tablo">
+            <thead>
+              <tr><th>Tarih</th><th>Kim</th><th>Saat</th><th>Açıklama</th><th><span class="ekran-disi">İşlemler</span></th></tr>
+            </thead>
+            <tbody id="izin-satirlari"></tbody>
+          </table>
+        </div>
+        <p id="izin-bos" class="liste-bos" hidden>Önümüzdeki günlerde izin ya da kapalı gün yok.</p>
+      </div>
+    </section>
+
+    <!-- Yalnızca "Günü Yazdır" ile yazdırılır -->
+    <section id="yazdirma-listesi" class="yazdirma-listesi" aria-hidden="true"></section>
+  </div>
+
+  <!-- Randevu ekle / düzelt -->
+  <dialog id="randevu-penceresi" class="genis-pencere">
+    <form id="randevu-formu" class="bilgi-formu" novalidate>
+      <h2>Randevu</h2>
+      <p id="randevu-kaynak" class="form-notu" hidden></p>
+      <div class="alanlar">
+        <label>Telefon
+          <input name="telefon" type="tel" autocomplete="off" placeholder="0532 123 45 67" required>
+        </label>
+        <div id="telefon-bilgisi" class="telefon-bilgisi" hidden></div>
+        <div class="alan-ikili">
+          <label>Ad
+            <input name="ad" autocomplete="off" maxlength="100" required>
+          </label>
+          <label>Soyad
+            <input name="soyad" autocomplete="off" maxlength="100">
+          </label>
+        </div>
+        <div id="hasta-bag" class="hasta-bag"></div>
+        <div class="alan-ikili">
+          <label>Doktor
+            <select name="doktor" required></select>
+          </label>
+          <label>İşlem
+            <input name="islem" list="islem-onerileri" autocomplete="off" maxlength="200" placeholder="Muayene, dolgu, kontrol...">
+          </label>
+        </div>
+        <div class="alan-uclu">
+          <label>Tarih
+            <input name="tarih" type="date" required>
+          </label>
+          <label>Saat
+            <input name="saat" type="time" step="300" required>
+          </label>
+          <label>Süre
+            <select name="sure"></select>
+          </label>
+        </div>
+        <p id="randevu-uyari" class="randevu-uyari" hidden></p>
+        <label>Not
+          <textarea name="not" rows="2" maxlength="1000"></textarea>
+        </label>
+        <label class="satir-secenek"><input name="ilkGelis" type="checkbox"> İlk kez geliyor</label>
+        <fieldset class="secim-grubu durum-secimi">
+          <legend>Durum</legend>
+          <label><input type="radio" name="durum" value="bekliyor" checked> Bekliyor</label>
+          <label><input type="radio" name="durum" value="geldi"> Geldi</label>
+          <label><input type="radio" name="durum" value="gelmedi"> Gelmedi</label>
+          <label><input type="radio" name="durum" value="iptal"> İptal</label>
+          <label id="durum-ertelendi" hidden><input type="radio" name="durum" value="ertelendi"> Ertelendi</label>
+        </fieldset>
+      </div>
+      <div class="form-alt">
+        <button id="randevu-sil" class="dugme tehlike" type="button">Sil</button>
+        <button id="randevu-ertele" class="dugme" type="button">Ertele</button>
+        <span class="pencere-mesaji" role="status"></span>
+        <button class="dugme vazgec" type="button">Vazgeç</button>
+        <button class="dugme birincil" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Randevuyu paneldeki hasta kaydına bağlama -->
+  <dialog id="hasta-sec-penceresi">
+    <div class="bilgi-formu">
+      <h2>Panel kaydına bağla</h2>
+      <p class="form-notu">Hasta panelde kayıtlıysa seçin. Yeni hastanın kaydı klinik panelinde açılır; sonra burada bağlanır.</p>
+      <div class="alanlar">
+        <input id="hasta-sec-arama" type="search" placeholder="Hasta No, isim, TC veya telefon" aria-label="Hasta ara" autocomplete="off">
+      </div>
+      <ul id="hasta-sec-listesi" class="secim-listesi"></ul>
+      <div class="form-alt">
+        <button id="hasta-sec-kapat" class="dugme" type="button">Kapat</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Gelmeyeni arama kaydı -->
+  <dialog id="arama-penceresi">
+    <form id="arama-formu" class="bilgi-formu" novalidate>
+      <h2>Arama kaydet</h2>
+      <p id="arama-hasta" class="form-notu"></p>
+      <div class="alanlar">
+        <fieldset class="secim-grubu dikey">
+          <legend>Sonuç</legend>
+          <label><input type="radio" name="sonuc" value="ulasilamadi" checked> Ulaşılamadı (açmadı / kapalı)</label>
+          <label><input type="radio" name="sonuc" value="sonra_ara"> Konuşuldu, sonra aranacak</label>
+          <label><input type="radio" name="sonuc" value="vazgecti"> Vazgeçti / gelmeyecek (listeden düşer)</label>
+        </fieldset>
+        <label>Not
+          <textarea name="not" rows="3" maxlength="500" placeholder="Örn. akşam 6'dan sonra aranacak"></textarea>
+        </label>
+      </div>
+      <p class="form-notu">Yeni randevu alacaksa bu pencereyi kapatıp "Yeniden randevu" düğmesini kullanın.</p>
+      <div class="form-alt">
+        <span class="pencere-mesaji" role="status"></span>
+        <button class="dugme vazgec" type="button">Vazgeç</button>
+        <button class="dugme birincil" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Doktor -->
+  <dialog id="doktor-penceresi" class="genis-pencere">
+    <form id="doktor-formu" class="bilgi-formu" novalidate>
+      <h2>Doktor</h2>
+      <div class="alanlar">
+        <div class="alan-ikili">
+          <label>Ad
+            <input name="ad" autocomplete="off" maxlength="100" placeholder="Dt. Ayşe Yılmaz" required>
+          </label>
+          <label>Renk
+            <input name="renk" type="color" class="renk-kutusu">
+          </label>
+        </div>
+        <div class="alan-uclu">
+          <label>Randevu süresi
+            <select name="randevuSuresi"></select>
+          </label>
+          <label>Sıra
+            <input name="sira" type="number" min="0" max="99" step="1">
+          </label>
+          <label class="satir-secenek"><input name="aktif" type="checkbox" checked> Aktif</label>
+        </div>
+        <div class="tablo-kaydirma">
+          <table class="tablo calisma-tablosu">
+            <thead>
+              <tr><th>Gün</th><th>Başlangıç</th><th>Bitiş</th><th>Öğle arası</th><th>Ara bitişi</th></tr>
+            </thead>
+            <tbody id="calisma-satirlari"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="form-alt">
+        <span class="pencere-mesaji" role="status"></span>
+        <button class="dugme vazgec" type="button">Vazgeç</button>
+        <button class="dugme birincil" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- İzin / kapalı gün -->
+  <dialog id="izin-penceresi">
+    <form id="izin-formu" class="bilgi-formu" novalidate>
+      <h2>İzin / Kapalı gün</h2>
+      <div class="alanlar">
+        <label>Kim
+          <select name="doktor"></select>
+        </label>
+        <div class="alan-ikili">
+          <label>İlk gün
+            <input name="tarih" type="date" required>
+          </label>
+          <label>Son gün
+            <input name="sonTarih" type="date">
+          </label>
+        </div>
+        <div class="alan-ikili">
+          <label>Başlangıç saati
+            <input name="bas" type="time" step="300">
+          </label>
+          <label>Bitiş saati
+            <input name="bit" type="time" step="300">
+          </label>
+        </div>
+        <p class="form-notu">Saatleri boş bırakırsanız bütün gün kapalı sayılır. Birden çok gün için son günü seçin.</p>
+        <label>Açıklama
+          <input name="aciklama" autocomplete="off" maxlength="200" placeholder="Yıllık izin, bayram, kongre...">
+        </label>
+      </div>
+      <div class="form-alt">
+        <span class="pencere-mesaji" role="status"></span>
+        <button class="dugme vazgec" type="button">Vazgeç</button>
+        <button class="dugme birincil" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <datalist id="islem-onerileri"></datalist>
+
+  <script src="vendor/pocketbase.umd.js"></script>
+  <script src="ortak.js"></script>
+  <script src="sunucu.js"></script>
+  <script src="veri.js"></script>
+  <script src="pencereler.js"></script>
+  <script src="takvim.js"></script>
+  <script src="gelmeyenler.js"></script>
+  <script src="hatirlatma.js"></script>
+  <script src="doktorlar.js"></script>
+  <script src="uygulama.js"></script>
+</body>
+</html>
