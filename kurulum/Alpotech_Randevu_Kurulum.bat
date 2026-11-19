@@ -7,7 +7,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$k = [IO.File]::ReadAllT
 exit /b
 :POWERSHELL
 $ErrorActionPreference = "Stop"
-$VarsayilanAdres = "192.168.1.41:8091"   # sunucunun şimdiki adresi; klinikte sabit IP verilince değişecek
+$VarsayilanAdres = "192.168.1.37:8091"   # sunucunun şimdiki adresi; klinikte sabit IP verilince değişecek
 
 function Dur([string]$mesaj) {
     Write-Host ""
